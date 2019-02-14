@@ -11,7 +11,7 @@ public class LiftController {
 
 	WPI_TalonSRX _lift = new WPI_TalonSRX(30);
 	Joystick _joy1;
-	int step = 1;
+	int step = 0;
 	// PID values
 	double P = 0.0004, I = 0, D = 0;
 	// CTREEnocder weird stuff
@@ -24,7 +24,6 @@ public class LiftController {
 
 	// Height for placing the ball as well as modes to reach those points
     double[] ballHeight = new double[]{5000, 7000, 8000, 9000};
-
 	
 	public LiftController(boolean setInverted, Joystick joy){
 		invert(setInverted);
@@ -34,28 +33,48 @@ public class LiftController {
 	}
 
 	public void run(){
-		if(_joy1.getRawButton(3)){
-			_lift.set(.5);
-			liftPID.setSetpoint(_lift.getSelectedSensorPosition(0));
-		}else if(_joy1.getRawButton(4)){
-			_lift.set(-.3);
-			liftPID.setSetpoint(_lift.getSelectedSensorPosition(0));
-		}else if(_joy1.getRawButton(7)){
-			liftPID.setSetpoint(hatchHeight[0]);
-		}else if(_joy1.getRawButton(8)){
-			liftPID.setSetpoint(hatchHeight[1]);
-		}else if(_joy1.getRawButton(9)){
-			liftPID.setSetpoint(hatchHeight[2]);
-		}else if(_joy1.getRawButton(5)){
-			liftPID.setSetpoint(ballHeight[0]);
-		}else if(_joy1.getRawButton(10)){
-			liftPID.setSetpoint(ballHeight[1]);
-		}else if(_joy1.getRawButton(11)){
-			liftPID.setSetpoint(ballHeight[2]);
-		}else if(_joy1.getRawButton(12)){
-			liftPID.setSetpoint(ballHeight[3]);
-		}else
-			liftPID.enable();
+
+		if(_joy1.getRawButton(5))
+			step = 0;
+		else if(_joy1.getRawButton(6)){
+			liftPID.disable();
+			step = 0;
+		}
+		
+		switch(step){
+			case 0:
+				if(_joy1.getRawButton(3)){
+					_lift.set(.5);
+					liftPID.setSetpoint(_lift.getSelectedSensorPosition(0));
+				}else if(_joy1.getRawButton(4)){
+					_lift.set(-.3);
+					liftPID.setSetpoint(_lift.getSelectedSensorPosition(0));
+				}else if(_joy1.getRawButton(7)){
+					liftPID.setSetpoint(hatchHeight[0]);
+				}else if(_joy1.getRawButton(8)){
+					liftPID.setSetpoint(hatchHeight[1]);
+				}else if(_joy1.getRawButton(9)){
+					liftPID.setSetpoint(hatchHeight[2]);
+				}else if(_joy1.getRawButton(5)){
+					liftPID.setSetpoint(ballHeight[0]);
+				}else if(_joy1.getRawButton(10)){
+					liftPID.setSetpoint(ballHeight[1]);
+				}else if(_joy1.getRawButton(11)){
+					liftPID.setSetpoint(ballHeight[2]);
+				}else if(_joy1.getRawButton(12)){
+					liftPID.setSetpoint(ballHeight[3]);
+				}else
+					liftPID.enable();
+				break;
+			case 1:
+				if(_joy1.getRawButton(3)){
+					_lift.set(.5);
+				}else if(_joy1.getRawButton(4))
+					_lift.set(-.3);
+				else 
+					_lift.set(0);
+				break;	
+		}
 	}
 
 	// Used to invert the talon direction
