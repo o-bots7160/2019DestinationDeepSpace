@@ -7,20 +7,31 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.TimedRobot;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the TimedRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.gradle file in the
- * project.
- */
+/*
+2019 FRC Robot Code
+Team: 7160
+Last Update: February 14, 2019 
+Written by : Jordan Lake, Conner Grant, David Scott
+*/
+
+
 public class Robot extends TimedRobot {
-  /**
-   * This function is run when the robot is first started up and should be used
-   * for any initialization code.
-   */
+  
+
+  Joystick _joystick = new Joystick(0);
+
+  LiftController _lift = new LiftController(false, _joystick);
+  Pneumatics _pneumatics = new Pneumatics();
+  LimeLight _limelight = new LimeLight();
+  DriveTrain _drivetrain = new DriveTrain(_joystick);
+
   @Override
   public void robotInit() {
   }
@@ -39,6 +50,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    _lift.run();
+    _pneumatics.run();
+    _limelight.run();
+    _drivetrain.run();
+
+
+
+
   }
 
   @Override
