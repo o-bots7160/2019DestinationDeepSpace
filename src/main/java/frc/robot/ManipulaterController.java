@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
-public class LiftController {
+public class ManipulaterController {
 
 	WPI_TalonSRX _lift = new WPI_TalonSRX(30);
-	Joystick _joy1;
+	Joystick joy;
 	int step = 0;
 	// PID values
 	double P = 0.0004, I = 0, D = 0;
@@ -25,51 +25,51 @@ public class LiftController {
 	// Height for placing the ball as well as modes to reach those points
     double[] ballHeight = new double[]{5000, 7000, 8000, 9000};
 	
-	public LiftController(boolean setInverted, Joystick joy){
+	public ManipulaterController(boolean setInverted, Joystick joy){
 		invert(setInverted);
-		_joy1 = joy;
+		this.joy = joy;
 		liftPID.reset();
 		liftPID.setOutputRange(-0.5, 0.5);
 	}
 
 	public void run(){
 
-		if(_joy1.getRawButton(5))
+		if(joy.getRawButton(5))
 			step = 0;
-		else if(_joy1.getRawButton(6)){
+		else if(joy.getRawButton(6)){
 			liftPID.disable();
 			step = 0;
 		}
 		
 		switch(step){
 			case 0:
-				if(_joy1.getRawButton(3)){
+				if(joy.getY()>0){
 					_lift.set(.5);
 					liftPID.setSetpoint(_lift.getSelectedSensorPosition(0));
-				}else if(_joy1.getRawButton(4)){
+				}else if(joy.getY()<0){
 					_lift.set(-.3);
 					liftPID.setSetpoint(_lift.getSelectedSensorPosition(0));
-				}else if(_joy1.getRawButton(7)){
+				}else if(joy.getRawButton(7)){
 					liftPID.setSetpoint(hatchHeight[0]);
-				}else if(_joy1.getRawButton(8)){
+				}else if(joy.getRawButton(8)){
 					liftPID.setSetpoint(hatchHeight[1]);
-				}else if(_joy1.getRawButton(9)){
+				}else if(joy.getRawButton(9)){
 					liftPID.setSetpoint(hatchHeight[2]);
-				}else if(_joy1.getRawButton(5)){
+				}else if(joy.getRawButton(5)){
 					liftPID.setSetpoint(ballHeight[0]);
-				}else if(_joy1.getRawButton(10)){
+				}else if(joy.getRawButton(10)){
 					liftPID.setSetpoint(ballHeight[1]);
-				}else if(_joy1.getRawButton(11)){
+				}else if(joy.getRawButton(11)){
 					liftPID.setSetpoint(ballHeight[2]);
-				}else if(_joy1.getRawButton(12)){
+				}else if(joy.getRawButton(12)){
 					liftPID.setSetpoint(ballHeight[3]);
 				}else
 					liftPID.enable();
 				break;
 			case 1:
-				if(_joy1.getRawButton(3)){
+				if(joy.getRawButton(3)){
 					_lift.set(.5);
-				}else if(_joy1.getRawButton(4))
+				}else if(joy.getRawButton(4))
 					_lift.set(-.3);
 				else 
 					_lift.set(0);
