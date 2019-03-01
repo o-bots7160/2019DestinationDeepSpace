@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSource;
@@ -11,7 +12,7 @@ public class ManipulaterController {
 
 	WPI_TalonSRX _lift = new WPI_TalonSRX(30);
 	Joystick joy;
-	int step = 0;
+	int step = 1;
 	// PID values
 	double P = 0.0004, I = 0, D = 0;
 	// CTREEnocder weird stuff
@@ -23,7 +24,9 @@ public class ManipulaterController {
     double[] hatchHeight = new double[]{4096, 8192, 9000};
 
 	// Height for placing the ball as well as modes to reach those points
-    double[] ballHeight = new double[]{5000, 7000, 8000, 9000};
+	double[] ballHeight = new double[]{5000, 7000, 8000, 9000};
+	
+	DigitalInput topLiftLimit = new DigitalInput(0);
 	
 	public ManipulaterController(boolean setInverted, Joystick joy){
 		invert(setInverted);
@@ -34,12 +37,12 @@ public class ManipulaterController {
 
 	public void run(){
 
-		if(joy.getRawButton(5))
+		/*if(joy.getRawButton(5))
 			step = 0;
 		else if(joy.getRawButton(6)){
 			liftPID.disable();
 			step = 0;
-		}
+		}*/
 		
 		switch(step){
 			case 0:
@@ -67,9 +70,14 @@ public class ManipulaterController {
 					liftPID.enable();
 				break;
 			case 1:
-				if(joy.getRawButton(3)){
-					_lift.set(.5);
-				}else if(joy.getRawButton(4))
+				if(!topLiftLimit.get()){
+					if(joy.getRawButton(5)){
+						_lift.set(.5);
+					}else if(joy.getRawButton(6))
+						_lift.set(-.3);
+					else 
+						_lift.set(0);
+				}else if(joy.getRawButton(6))
 					_lift.set(-.3);
 				else 
 					_lift.set(0);
