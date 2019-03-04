@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DriveTrain {
 
-    Joystick joy1;
+    Joystick joy;
 
     WPI_VictorSPX _rghtFront = new WPI_VictorSPX(10);
     WPI_VictorSPX _rghtFollower = new WPI_VictorSPX(11);
-    WPI_TalonSRX _leftFront = new WPI_TalonSRX(21);
+    WPI_TalonSRX _leftFront = new WPI_TalonSRX(20);
     WPI_VictorSPX _leftFollower = new WPI_VictorSPX(21);
 
     WPI_VictorSPX _habClimb = new WPI_VictorSPX(40);
@@ -21,7 +21,7 @@ public class DriveTrain {
 
 
     public DriveTrain(Joystick joy){
-        joy1 = joy;
+        this.joy = joy;
 
     _rghtFront.configFactoryDefault();
     _rghtFollower.configFactoryDefault();
@@ -34,7 +34,7 @@ public class DriveTrain {
 
     public void joyRun(){
 
-        _diffDrive.arcadeDrive(joy1.getY()/1.5, joy1.getZ()/2);
+        _diffDrive.arcadeDrive(-joy.getY(), joy.getZ());
 
     }
 
@@ -42,8 +42,13 @@ public class DriveTrain {
         _diffDrive.arcadeDrive(x, z);
     }
 
-    public void climb(double speed){
-        _habClimb.set(speed);
+    public void climb(){
+        if(joy.getPOV()==0)
+            _habClimb.set(.5);
+        else if(joy.getPOV()==180)
+            _habClimb.set(-.5);
+        else
+            _habClimb.set(0);
     }
 
 }

@@ -8,6 +8,7 @@ Written by : Jordan Lake, Conner Grant, David Scott
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 
@@ -22,16 +23,26 @@ public class Robot extends TimedRobot {
   Pneumatics _pneumatics = new Pneumatics(_joystick2);
   LimeLight _limelight = new LimeLight();
   DriveTrain _drivetrain = new DriveTrain(_joystick);
+  Compressor c = new Compressor(0);
 
   @Override
   public void robotInit() {
   }
+  @Override
+  public void disabledInit() {
+    
+  }
+
+  @Override
+  public void disabledPeriodic() {
+  
+    
+}
 
   public void run(){
-    _drivetrain.joyRun();;
-    _manipulaterController.run();
+    _drivetrain.joyRun();
+    _manipulaterController.liftRun();
     _pneumatics.run();
-    //_limelight.run();
   }
 
   @Override

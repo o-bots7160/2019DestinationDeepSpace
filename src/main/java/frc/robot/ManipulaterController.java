@@ -1,8 +1,8 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSource;
@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 public class ManipulaterController {
 
 	WPI_TalonSRX _lift = new WPI_TalonSRX(30);
+	WPI_VictorSPX _ballWheel = new WPI_VictorSPX(31);
 	Joystick joy;
 	int step = 1;
 	// PID values
@@ -24,9 +25,7 @@ public class ManipulaterController {
     double[] hatchHeight = new double[]{4096, 8192, 9000};
 
 	// Height for placing the ball as well as modes to reach those points
-	double[] ballHeight = new double[]{5000, 7000, 8000, 9000};
-	
-	DigitalInput topLiftLimit = new DigitalInput(0);
+    double[] ballHeight = new double[]{5000, 7000, 8000, 9000};
 	
 	public ManipulaterController(boolean setInverted, Joystick joy){
 		invert(setInverted);
@@ -35,7 +34,7 @@ public class ManipulaterController {
 		liftPID.setOutputRange(-0.5, 0.5);
 	}
 
-	public void run(){
+	public void liftRun(){
 
 		/*if(joy.getRawButton(5))
 			step = 0;
@@ -52,37 +51,44 @@ public class ManipulaterController {
 				}else if(joy.getY()<0){
 					_lift.set(-.3);
 					liftPID.setSetpoint(_lift.getSelectedSensorPosition(0));
-				}else if(joy.getRawButton(7)){
+				}else if(joy.getRawButton(1)){
 					liftPID.setSetpoint(hatchHeight[0]);
-				}else if(joy.getRawButton(8)){
+				}else if(joy.getRawButton(2)){
 					liftPID.setSetpoint(hatchHeight[1]);
-				}else if(joy.getRawButton(9)){
+				}else if(joy.getRawButton(3)){
 					liftPID.setSetpoint(hatchHeight[2]);
-				}else if(joy.getRawButton(5)){
+				}else if(joy.getRawButton(4)){
 					liftPID.setSetpoint(ballHeight[0]);
-				}else if(joy.getRawButton(10)){
+				}else if(joy.getRawButton(5)){
 					liftPID.setSetpoint(ballHeight[1]);
-				}else if(joy.getRawButton(11)){
+				}else if(joy.getRawButton(6)){
 					liftPID.setSetpoint(ballHeight[2]);
-				}else if(joy.getRawButton(12)){
+				}else if(joy.getRawButton(7)){
 					liftPID.setSetpoint(ballHeight[3]);
+				}else if(_lift.getSensorCollection().isFwdLimitSwitchClosed()){
+					_lift.set(0);
+				}else if(_lift.getSensorCollection().isRevLimitSwitchClosed()){
+					_lift.set(0);
+					reset();
 				}else
 					liftPID.enable();
 				break;
 			case 1:
-				if(!topLiftLimit.get()){
-					if(joy.getRawButton(5)){
-						_lift.set(.5);
-					}else if(joy.getRawButton(6))
-						_lift.set(-.3);
-					else 
-						_lift.set(0);
-				}else if(joy.getRawButton(6))
+				if(joy.getY()>.5){
+					_lift.set(.4);
+				}else if(joy.getY()<-.5)
 					_lift.set(-.3);
+				else if (_lift.getSensorCollection().isFwdLimitSwitchClosed()||_lift.getSensorCollection().isRevLimitSwitchClosed())
+					_lift.set(0);
 				else 
 					_lift.set(0);
 				break;	
 		}
+	}
+
+	public void cargoGrabberRun(){
+
+		//_ballWheel.set(.5);
 	}
 
 	// Used to invert the talon direction

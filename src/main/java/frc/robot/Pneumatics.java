@@ -9,8 +9,8 @@ public class Pneumatics{
 
     DoubleSolenoid grabberLift = new DoubleSolenoid(0, 1);
     DoubleSolenoid hatchGrabber = new DoubleSolenoid(2, 3);
-    DoubleSolenoid frntEnd = new DoubleSolenoid(4, 5);
-    DoubleSolenoid backEnd = new DoubleSolenoid(6, 7);
+    //DoubleSolenoid frntEnd = new DoubleSolenoid(4, 5);
+    //DoubleSolenoid backEnd = new DoubleSolenoid(6, 7);
 
     public Pneumatics(Joystick joy){
         this.joy = joy;
