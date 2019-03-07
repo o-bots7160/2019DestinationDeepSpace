@@ -17,16 +17,16 @@ public class Robot extends TimedRobot {
   
 
   Joystick _joystick = new Joystick(0);
-  Joystick _joystick2 = new Joystick(1);
 
-  ManipulaterController _manipulaterController = new ManipulaterController(false, _joystick2);
-  Pneumatics _pneumatics = new Pneumatics(_joystick2);
+
+  ManipulaterController _manipulaterController = new ManipulaterController(true, _joystick);
   LimeLight _limelight = new LimeLight();
   DriveTrain _drivetrain = new DriveTrain(_joystick);
   Compressor c = new Compressor(0);
 
   @Override
   public void robotInit() {
+    _manipulaterController.reset();
   }
   @Override
   public void disabledInit() {
@@ -42,7 +42,6 @@ public class Robot extends TimedRobot {
   public void run(){
     _drivetrain.joyRun();
     _manipulaterController.liftRun();
-    _pneumatics.run();
   }
 
   @Override
@@ -56,6 +55,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    _manipulaterController.reset();
   }
 
   @Override

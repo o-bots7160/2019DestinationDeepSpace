@@ -3,83 +3,130 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ManipulaterController {
 
+	DoubleSolenoid hatchGrabber = new DoubleSolenoid(2, 3);
+
 	WPI_TalonSRX _lift = new WPI_TalonSRX(30);
 	WPI_VictorSPX _ballWheel = new WPI_VictorSPX(31);
-	Joystick joy;
-	int step = 1;
+	Joystick manipJoy = new Joystick(1);
+	Joystick driveJoy;
+
 	// PID values
-	double P = 0.0004, I = 0, D = 0;
+	double P = -0.0004, I = 0, D = 0;
 	// CTREEnocder weird stuff
 	CTREEncoder enc = new CTREEncoder(_lift);
 	// PID controller
 	PIDController liftPID = new PIDController(P, I, D, enc, _lift);
-	
 	// Height for placing the hatch as well as modes to reach those points
-    double[] hatchHeight = new double[]{4096, 8192, 9000};
+    double[] hatchHeight = new double[]{-1000, -10200, -20117};
 
 	// Height for placing the ball as well as modes to reach those points
-    double[] ballHeight = new double[]{5000, 7000, 8000, 9000};
+    double[] ballHeight = new double[]{
+		// rocket 1:
+		-7082,
+		// rocket 2:
+		-17045,
+		// rocket 3:
+		-26330
+		// cargo:
+		//9000
+	};
+
+	enum getToBottomModes{
+		SETBOTTOMPOINT, TURNLIFTOFF
+	  }
+
+	  getToBottomModes bottomModes;
+	int step = 1;
+
+		enum modes { PID, FULLMANUAL };
+
+		modes mode;
 	
 	public ManipulaterController(boolean setInverted, Joystick joy){
-		invert(setInverted);
-		this.joy = joy;
-		liftPID.reset();
-		liftPID.setOutputRange(-0.5, 0.5);
-	}
-
-	public void liftRun(){
-
-		/*if(joy.getRawButton(5))
-			step = 0;
-		else if(joy.getRawButton(6)){
-			liftPID.disable();
-			step = 0;
-		}*/
 		
-		switch(step){
-			case 0:
-				if(joy.getY()>0){
-					_lift.set(.5);
-					liftPID.setSetpoint(_lift.getSelectedSensorPosition(0));
-				}else if(joy.getY()<0){
-					_lift.set(-.3);
-					liftPID.setSetpoint(_lift.getSelectedSensorPosition(0));
-				}else if(joy.getRawButton(1)){
-					liftPID.setSetpoint(hatchHeight[0]);
-				}else if(joy.getRawButton(2)){
-					liftPID.setSetpoint(hatchHeight[1]);
-				}else if(joy.getRawButton(3)){
-					liftPID.setSetpoint(hatchHeight[2]);
-				}else if(joy.getRawButton(4)){
-					liftPID.setSetpoint(ballHeight[0]);
-				}else if(joy.getRawButton(5)){
-					liftPID.setSetpoint(ballHeight[1]);
-				}else if(joy.getRawButton(6)){
-					liftPID.setSetpoint(ballHeight[2]);
-				}else if(joy.getRawButton(7)){
-					liftPID.setSetpoint(ballHeight[3]);
-				}else if(_lift.getSensorCollection().isFwdLimitSwitchClosed()){
-					_lift.set(0);
-				}else if(_lift.getSensorCollection().isRevLimitSwitchClosed()){
-					_lift.set(0);
-					reset();
-				}else
-					liftPID.enable();
+		this.driveJoy = joy;
+		liftPID.reset();
+		liftPID.setOutputRange(-0.3, 0.5);
+		mode = modes.PID;
+		bottomModes = getToBottomModes.SETBOTTOMPOINT;
+	}
+	double getEncoder(){
+		return _lift.getSelectedSensorPosition(0);
+	}
+	public void liftRun(){
+		SmartDashboard.putNumber("Encoder", _lift.getSelectedSensorPosition(0));
+    	SmartDashboard.putNumber("Step", step);
+    	SmartDashboard.putNumber("Voltage", _lift.getMotorOutputVoltage());
+    	SmartDashboard.putNumber("Set point", liftPID.getSetpoint());
+
+		if(driveJoy.getRawButton(11)){
+            hatchGrabber.set(DoubleSolenoid.Value.kForward);
+        } else if(driveJoy.getRawButton(12)){
+            hatchGrabber.set(DoubleSolenoid.Value.kReverse);
+        } else{
+            hatchGrabber.set(DoubleSolenoid.Value.kOff);
+        }
+
+		switch(mode){
+			case PID:
+			if(manipJoy.getRawButton(8)){
+				liftPID.disable();
+				_lift.set(.5);
+				liftPID.setSetpoint(_lift.getSelectedSensorPosition(0));
+			  }else if(manipJoy.getRawButton(7)){
+				liftPID.disable();
+				_lift.set(-.3);
+				liftPID.setSetpoint(_lift.getSelectedSensorPosition(0));
+			  // Ball panel heights
+			  }else if(manipJoy.getRawButton(4)){
+				liftPID.setSetpoint(ballHeight[0]);
+			  }else if(manipJoy.getRawButton(5)){
+				liftPID.setSetpoint(ballHeight[1]);
+			  }else if(manipJoy.getRawButton(6)){
+				liftPID.setSetpoint(ballHeight[2]);
+			  // Hatch height
+			  }else if(manipJoy.getRawButton(1)){
+				bottomModes = getToBottomModes.SETBOTTOMPOINT;
+				goToBottom();
+			  }else if(manipJoy.getRawButton(2)){
+				liftPID.setSetpoint(hatchHeight[1]);
+			  }else if(manipJoy.getRawButton(3)){
+				liftPID.setSetpoint(hatchHeight[2]);
+			  // Ball height for cargo ship
+			  }else if(manipJoy.getRawButton(12)){
+				// idk yet
+			  }
+			  else{
+				  switch(step){
+					case 1:
+					liftPID.disable();
+					  _lift.set(0);
+					  if(driveJoy.getRawButtonPressed(5))
+						step++;
+					  break;
+					case 2:
+					  liftPID.enable();
+					  if(driveJoy.getRawButtonPressed(5))
+						step--;
+					  break;
+				  }
+				}
 				break;
-			case 1:
-				if(joy.getY()>.5){
-					_lift.set(.4);
-				}else if(joy.getY()<-.5)
+			case FULLMANUAL:
+				liftPID.disable();
+				if(manipJoy.getY()>.5)
+					_lift.set(.5);
+				else if(manipJoy.getY()<-.5)
 					_lift.set(-.3);
-				else if (_lift.getSensorCollection().isFwdLimitSwitchClosed()||_lift.getSensorCollection().isRevLimitSwitchClosed())
-					_lift.set(0);
 				else 
 					_lift.set(0);
 				break;	
@@ -91,18 +138,29 @@ public class ManipulaterController {
 		//_ballWheel.set(.5);
 	}
 
+	void goToBottom(){
+		switch(bottomModes){
+		  case SETBOTTOMPOINT:
+			liftPID.setSetpoint(hatchHeight[0]);
+			bottomModes = getToBottomModes.TURNLIFTOFF;
+			break;
+		  case TURNLIFTOFF:
+			if(_lift.getSelectedSensorPosition(0)<-1100)
+			  step = 1;
+			  liftPID.disable();
+			break;
+		}
+	  }
+
 	// Used to invert the talon direction
 	public void invert(boolean inv) {
 		_lift.setInverted(inv);
 	}
 	
-	
-	
-	public void reset() {
+	void reset() {
 		_lift.getSensorCollection().setPulseWidthPosition(0, 100);
 		_lift.getSensorCollection().setQuadraturePosition(0, 100);
-	}
-	
+  }
 }
 
 class CTREEncoder implements PIDSource {

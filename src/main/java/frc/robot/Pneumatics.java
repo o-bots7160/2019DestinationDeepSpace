@@ -14,7 +14,6 @@ public class Pneumatics{
 
     public Pneumatics(Joystick joy){
         this.joy = joy;
-        
     }
 
     public void run(){
@@ -25,9 +24,9 @@ public class Pneumatics{
         }else{
             grabberLift.set(DoubleSolenoid.Value.kOff);
         }
-        if(joy.getRawButton(3)){
+        if(joy.getRawButton(11)){
             hatchGrabber.set(DoubleSolenoid.Value.kForward);
-        } else if(joy.getRawButton(4)){
+        } else if(joy.getRawButton(12)){
             hatchGrabber.set(DoubleSolenoid.Value.kReverse);
         } else{
             hatchGrabber.set(DoubleSolenoid.Value.kOff);

@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
@@ -19,6 +20,7 @@ public class DriveTrain {
 
     DifferentialDrive _diffDrive = new DifferentialDrive(_leftFront, _rghtFront);
 
+    DoubleSolenoid grabberLift = new DoubleSolenoid(0, 1);
 
     public DriveTrain(Joystick joy){
         this.joy = joy;
@@ -34,7 +36,7 @@ public class DriveTrain {
 
     public void joyRun(){
 
-        _diffDrive.arcadeDrive(-joy.getY(), joy.getZ());
+        _diffDrive.arcadeDrive(-joy.getY()/1.5, joy.getZ());
 
     }
 
