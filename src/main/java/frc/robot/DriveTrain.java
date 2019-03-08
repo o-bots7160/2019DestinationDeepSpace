@@ -36,7 +36,7 @@ public class DriveTrain {
 
     public void joyRun(){
 
-        _diffDrive.arcadeDrive(-joy.getY()/1.5, joy.getZ());
+        _diffDrive.arcadeDrive(-joy.getY()/1.5, joy.getZ()/1.5);
 
     }
 
