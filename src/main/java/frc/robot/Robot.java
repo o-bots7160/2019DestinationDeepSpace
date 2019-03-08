@@ -1,7 +1,7 @@
 /*
 2019 FRC Robot Code
 Team: 7160
-Last Update: March 1, 2019 
+Last Update: March 8, 2019 
 Written by : Jordan Lake, Conner Grant, David Scott
 */
 
@@ -35,13 +35,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-  
     
-}
-
-  public void run(){
-    _drivetrain.joyRun();
-    _manipulaterController.liftRun();
   }
 
   @Override
@@ -49,26 +43,13 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {
-    run();
-  }
-
-  @Override
   public void teleopInit() {
-    _manipulaterController.reset();
   }
 
   @Override
-  public void teleopPeriodic() {
-    run();
-  }
-
-  @Override
-  public void testInit() {
-  }
-
-  @Override
-  public void testPeriodic() {
+  public void robotPeriodic(){
+    _drivetrain.joyRun();
+    _manipulaterController.run();
   }
 
 }

@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ManipulaterController {
 
+
+	DoubleSolenoid grabberLift = new DoubleSolenoid(0, 1);
 	DoubleSolenoid hatchGrabber = new DoubleSolenoid(2, 3);
 
 	WPI_TalonSRX _lift = new WPI_TalonSRX(30);
@@ -19,14 +21,15 @@ public class ManipulaterController {
 	Joystick manipJoy = new Joystick(1);
 	Joystick driveJoy;
 
-	// PID values
+	// PID values\[][\]
+
 	double P = -0.0004, I = 0, D = 0;
 	// CTREEnocder weird stuff
 	CTREEncoder enc = new CTREEncoder(_lift);
 	// PID controller
 	PIDController liftPID = new PIDController(P, I, D, enc, _lift);
 	// Height for placing the hatch as well as modes to reach those points
-    double[] hatchHeight = new double[]{-1000, -10200, -20117};
+    double[] hatchHeight = new double[]{-500, -10200, -20117};
 
 	// Height for placing the ball as well as modes to reach those points
     double[] ballHeight = new double[]{
@@ -62,19 +65,28 @@ public class ManipulaterController {
 	double getEncoder(){
 		return _lift.getSelectedSensorPosition(0);
 	}
-	public void liftRun(){
+	public void run(){
+		cargoGrabberRun();
 		SmartDashboard.putNumber("Encoder", _lift.getSelectedSensorPosition(0));
     	SmartDashboard.putNumber("Step", step);
     	SmartDashboard.putNumber("Voltage", _lift.getMotorOutputVoltage());
     	SmartDashboard.putNumber("Set point", liftPID.getSetpoint());
 
-		if(driveJoy.getRawButton(11)){
+		if(driveJoy.getRawButton(9)){
             hatchGrabber.set(DoubleSolenoid.Value.kForward);
-        } else if(driveJoy.getRawButton(12)){
+        } else if(driveJoy.getRawButton(10)){
             hatchGrabber.set(DoubleSolenoid.Value.kReverse);
         } else{
             hatchGrabber.set(DoubleSolenoid.Value.kOff);
-        }
+		}
+		if(driveJoy.getRawButton(11)){
+            grabberLift.set(DoubleSolenoid.Value.kForward);
+        } else if(driveJoy.getRawButton(12)){
+            grabberLift.set(DoubleSolenoid.Value.kReverse);
+        } else{
+            grabberLift.set(DoubleSolenoid.Value.kOff);
+		}
+		
 
 		switch(mode){
 			case PID:
@@ -134,8 +146,14 @@ public class ManipulaterController {
 	}
 
 	public void cargoGrabberRun(){
-
-		//_ballWheel.set(.5);
+		if(manipJoy.getRawButton(11)){
+			_ballWheel.set(.5);
+		}else if(manipJoy.getRawButton(12)){
+			_ballWheel.set(-.5);
+		}else{
+			_ballWheel.set(0);
+		}
+		//_ballWheel.set(.5);*/
 	}
 
 	void goToBottom(){
