@@ -147,9 +147,9 @@ public class ManipulaterController {
 
 	public void cargoGrabberRun(){
 		if(manipJoy.getRawButton(11)){
-			_ballWheel.set(.5);
+			_ballWheel.set(1);
 		}else if(manipJoy.getRawButton(12)){
-			_ballWheel.set(-.5);
+			_ballWheel.set(-1);
 		}else{
 			_ballWheel.set(0);
 		}
