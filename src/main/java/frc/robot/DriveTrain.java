@@ -59,5 +59,17 @@ public class DriveTrain {
         else
             _habClimb.set(0);
     }
+    public void limelightDriveLeftTarget(){
+        double steering_speed = LimeLight.leftRun();
+        if(joy.getRawButton(1)){
+            _diffDrive.arcadeDrive(-joy.getX()/1.5, steering_speed/(-2));
+        }
+    }
+    public void limelightDriveRightTarget(){
+        if(joy.getRawButton(2)){
+        double steering_speed = LimeLight.rightRun();
+        _diffDrive.arcadeDrive(-joy.getX()/1.5, steering_speed/(-2));
+            }
+        }
 
 }
