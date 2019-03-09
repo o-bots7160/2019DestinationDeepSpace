@@ -4,8 +4,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-//import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DriveTrain {
@@ -19,8 +19,12 @@ public class DriveTrain {
 
     WPI_VictorSPX _habClimb = new WPI_VictorSPX(40);
 
-    //DoubleSolenoid _frontClimbHab2 = new DoubleSolenoid(1, ,5);   
-    //DoubleSolenoid _backClimbHab2 = new DoubleSolenoid(1, 6, 7);
+    //Solenoid _frontClimb1 = new Solenoid(1, 0);
+    //Solenoid _backClimb1 = new Solenoid(1, 1);
+
+
+    //DoubleSolenoid _frontClimbHab2 = new DoubleSolenoid(1,2,3);   
+    //DoubleSolenoid _backClimbHab2 = new DoubleSolenoid(1, 4, 5);
 
     DifferentialDrive _diffDrive = new DifferentialDrive(_leftFront, _rghtFront);
 

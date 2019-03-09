@@ -21,7 +21,7 @@ public class ManipulaterController {
 	Joystick manipJoy = new Joystick(1);
 	Joystick driveJoy;
 
-	// PID values\[][\]
+	// PID values
 
 	double P = -0.0004, I = 0, D = 0;
 	// CTREEnocder weird stuff
@@ -55,8 +55,7 @@ public class ManipulaterController {
 		modes mode;
 	
 	public ManipulaterController(boolean setInverted, Joystick joy){
-		
-		this.driveJoy = joy;
+		driveJoy = joy;
 		liftPID.reset();
 		liftPID.setOutputRange(-0.3, 0.5);
 		mode = modes.PID;
@@ -68,9 +67,9 @@ public class ManipulaterController {
 	public void run(){
 		cargoGrabberRun();
 		SmartDashboard.putNumber("Encoder", _lift.getSelectedSensorPosition(0));
-    	SmartDashboard.putNumber("Step", step);
-    	SmartDashboard.putNumber("Voltage", _lift.getMotorOutputVoltage());
-    	SmartDashboard.putNumber("Set point", liftPID.getSetpoint());
+    SmartDashboard.putNumber("Step", step);
+    SmartDashboard.putNumber("Voltage", _lift.getMotorOutputVoltage());
+    SmartDashboard.putNumber("Set point", liftPID.getSetpoint());
 
 		if(driveJoy.getRawButton(9)){
             hatchGrabber.set(DoubleSolenoid.Value.kForward);
@@ -90,11 +89,11 @@ public class ManipulaterController {
 
 		switch(mode){
 			case PID:
-			if(manipJoy.getRawButton(8)){
+			if(driveJoy.getRawButton(8)){
 				liftPID.disable();
 				_lift.set(.5);
 				liftPID.setSetpoint(_lift.getSelectedSensorPosition(0));
-			  }else if(manipJoy.getRawButton(7)){
+			  }else if(driveJoy.getRawButton(7)){
 				liftPID.disable();
 				_lift.set(-.3);
 				liftPID.setSetpoint(_lift.getSelectedSensorPosition(0));
@@ -149,7 +148,7 @@ public class ManipulaterController {
 		if(manipJoy.getRawButton(11)){
 			_ballWheel.set(1);
 		}else if(manipJoy.getRawButton(12)){
-			_ballWheel.set(-1);
+			_ballWheel.set(-.3);
 		}else{
 			_ballWheel.set(0);
 		}
