@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -35,6 +36,10 @@ public class DriveTrain {
     _rghtFollower.configFactoryDefault();
     _leftFront.configFactoryDefault();
     _leftFollower.configFactoryDefault();
+    _rghtFront.configClosedloopRamp(.2);
+    _leftFront.configClosedloopRamp(.2);
+    _rghtFront.configClosedloopRamp(.1, 0);
+    _leftFront.configClosedloopRamp(.2, 0);
     _rghtFollower.follow(_rghtFront);
     _leftFollower.follow(_leftFront);
 
@@ -43,7 +48,7 @@ public class DriveTrain {
     }
 
     public void joyRun(){
-
+        if(!(joy.getRawButton(1) || joy.getRawButton(2)))
         _diffDrive.arcadeDrive(-joy.getY()/1.5, joy.getZ()/1.5);
 
     }
@@ -61,17 +66,17 @@ public class DriveTrain {
             _habClimb.set(0);
     }
 
-    public void limelightDriveLeftTarget(){
-        if(joy.getRawButton(1)){
-            double steering_speed = LimeLight.leftRun();
-            _diffDrive.arcadeDrive(-joy.getX()/1.5, steering_speed/(-2));
-        }
-    }
-    public void limelightDriveRightTarget(){
+    public void limelightDriveToTarget(){
         if(joy.getRawButton(2)){
-        double steering_speed = LimeLight.rightRun();
-        _diffDrive.arcadeDrive(-joy.getX()/1.5, steering_speed/(-2));
+            double steering_speed = LimeLight.leftRun(); //Align on to left-most target
+            _diffDrive.arcadeDrive(-joy.getY()/1.5, steering_speed/(-1.5));
+        }else if(joy.getRawButton(1)){
+            double steering_speed = LimeLight.rightRun(); //Alight on to right-most target
+            _diffDrive.arcadeDrive(-joy.getY()/1.5, steering_speed/(-1.5));
+        }else{
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
             }
         }
+    
 
 }

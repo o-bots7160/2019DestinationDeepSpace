@@ -8,9 +8,11 @@ Written by : Jordan Lake, Conner Grant, David Scott
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 
 
 public class Robot extends TimedRobot {
@@ -24,9 +26,19 @@ public class Robot extends TimedRobot {
   DriveTrain _drivetrain = new DriveTrain(_joystick);
   Compressor c = new Compressor(0);
 
+  enum robotModes{
+    START, DRIVE
+  }
+
+  robotModes robo;
+
+  Timer time = new Timer();
+
   @Override
   public void robotInit() {
+    robo = robotModes.START;
     _manipulaterController.reset();
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
   }
   @Override
   public void disabledInit() {
@@ -40,17 +52,26 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-  }
-
-  @Override
-  public void teleopInit() {
     _manipulaterController.reset();
+    //time.reset();
+    //time.start();
   }
 
   @Override
   public void robotPeriodic(){
+    /*switch(robo){
+      case START:
+        _manipulaterController.getOffHab(time);
+        break;
+      case DRIVE:
+        _drivetrain.joyRun();
+        _manipulaterController.run();
+        _drivetrain.limelightDriveToTarget();
+        break;
+    }*/
     _drivetrain.joyRun();
-    _manipulaterController.run();
+        _manipulaterController.run();
+        _drivetrain.limelightDriveToTarget();
   }
 
 }

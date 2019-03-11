@@ -24,18 +24,21 @@ public class LimeLight{
         x = tx.getDouble(0.0);
         double Kp = 0.1;
         double min_command = 0.05;
-        height = tvert.getDouble(0.0);
+        //height = tvert.getDouble(0.0);
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(2);
-        if(height > 0){
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+        /*if(height > 0){
             dist = heightPixelConstant*heightInchConstant/height;
         }else{
             dist = 0.0;
             }
+            */
         double steering_adjust = 0.0;
         double heading_error = -x;
-        double max_driveSpeed = 1.0;
-        double desired_distance = 20;
-        double driving_adjust = 0;
+        //double max_driveSpeed = 1.0;
+        //double desired_distance = 20;
+        //double driving_adjust = 0;
+        System.out.println(x);
         if (x > 1.0){
             steering_adjust = Kp*heading_error - min_command;
             }else if (x < 1.0){
@@ -47,18 +50,20 @@ public class LimeLight{
         x = tx.getDouble(0.0);
         double Kp = 0.1;
         double min_command = 0.05;
-        height = tvert.getDouble(0.0);
+        //height = tvert.getDouble(0.0);
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(3);
-        if(height > 0){
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+        /*if(height > 0){
             dist = heightPixelConstant*heightInchConstant/height;
         }else{
             dist = 0.0;
             }
+            */
         double steering_adjust = 0.0;
         double heading_error = -x;
-        double max_driveSpeed = 1.0;
-        double desired_distance = 20;
-        double driving_adjust = 0;
+       //double max_driveSpeed = 1.0;
+       //double desired_distance = 20;
+       //double driving_adjust = 0;
         if (x > 1.0){
             steering_adjust = Kp*heading_error - min_command;
             }else if (x < 1.0){

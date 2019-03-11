@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ManipulaterController {
@@ -38,9 +39,9 @@ public class ManipulaterController {
 		// rocket 2:
 		-17045,
 		// rocket 3:
-		-26330
+		-26330,
 		// cargo:
-		//9000
+		-12000
 	};
 
 	enum getToBottomModes{
@@ -50,15 +51,15 @@ public class ManipulaterController {
 	  getToBottomModes bottomModes;
 	int step = 1;
 
-		enum modes { PID, FULLMANUAL };
+	enum controlModes { PID, FULLMANUAL };
 
-		modes mode;
+	controlModes controlModes;
 	
 	public ManipulaterController(boolean setInverted, Joystick joy){
 		driveJoy = joy;
 		liftPID.reset();
 		liftPID.setOutputRange(-0.3, 0.5);
-		mode = modes.PID;
+		controlModes = controlModes.PID;
 		bottomModes = getToBottomModes.SETBOTTOMPOINT;
 	}
 	double getEncoder(){
@@ -71,23 +72,23 @@ public class ManipulaterController {
     SmartDashboard.putNumber("Voltage", _lift.getMotorOutputVoltage());
     SmartDashboard.putNumber("Set point", liftPID.getSetpoint());
 
-		if(driveJoy.getRawButton(9)){
-            hatchGrabber.set(DoubleSolenoid.Value.kForward);
-        } else if(driveJoy.getRawButton(10)){
-            hatchGrabber.set(DoubleSolenoid.Value.kReverse);
-        } else{
-            hatchGrabber.set(DoubleSolenoid.Value.kOff);
+		if(manipJoy.getRawButton(9)){
+        hatchGrabber.set(DoubleSolenoid.Value.kForward);
+    } else if(manipJoy.getRawButton(10)){
+     		hatchGrabber.set(DoubleSolenoid.Value.kReverse);
+    } else{
+    	 	hatchGrabber.set(DoubleSolenoid.Value.kOff);
 		}
 		if(driveJoy.getRawButton(11)){
-            grabberLift.set(DoubleSolenoid.Value.kForward);
-        } else if(driveJoy.getRawButton(12)){
-            grabberLift.set(DoubleSolenoid.Value.kReverse);
-        } else{
-            grabberLift.set(DoubleSolenoid.Value.kOff);
+        grabberLift.set(DoubleSolenoid.Value.kForward);
+    } else if(driveJoy.getRawButton(12)){
+        grabberLift.set(DoubleSolenoid.Value.kReverse);
+     } else{
+        grabberLift.set(DoubleSolenoid.Value.kOff);
 		}
 		
 
-		switch(mode){
+		switch(controlModes){
 			case PID:
 			if(driveJoy.getRawButton(8)){
 				liftPID.disable();
@@ -113,8 +114,8 @@ public class ManipulaterController {
 			  }else if(manipJoy.getRawButton(3)){
 				liftPID.setSetpoint(hatchHeight[2]);
 			  // Ball height for cargo ship
-			  }else if(manipJoy.getRawButton(12)){
-				// idk yet
+			  }else if(manipJoy.getRawButton(7)){
+					liftPID.setSetpoint(ballHeight[3]);
 			  }
 			  else{
 				  switch(step){
@@ -146,13 +147,17 @@ public class ManipulaterController {
 
 	public void cargoGrabberRun(){
 		if(manipJoy.getRawButton(11)){
-			_ballWheel.set(1);
+			_ballWheel.set(.8);
 		}else if(manipJoy.getRawButton(12)){
-			_ballWheel.set(-.3);
+			_ballWheel.set(-.4);
 		}else{
 			_ballWheel.set(0);
 		}
 		//_ballWheel.set(.5);*/
+	}
+
+	public void getOffHab(Timer time){
+
 	}
 
 	void goToBottom(){
