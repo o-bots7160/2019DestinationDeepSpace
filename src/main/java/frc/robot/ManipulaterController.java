@@ -44,6 +44,7 @@ public class ManipulaterController {
 		-12000
 	};
 
+
 	enum getToBottomModes{
 		SETBOTTOMPOINT, TURNLIFTOFF
 	  }
@@ -51,7 +52,9 @@ public class ManipulaterController {
 	  getToBottomModes bottomModes;
 	int step = 1;
 
-	enum controlModes { PID, FULLMANUAL };
+	enum controlModes { 
+			PID, FULLMANUAL
+		 };
 
 	controlModes controlModes;
 	
@@ -62,9 +65,17 @@ public class ManipulaterController {
 		controlModes = controlModes.PID;
 		bottomModes = getToBottomModes.SETBOTTOMPOINT;
 	}
+
+	public boolean tooHigh(){
+		if(getEncoder() >= hatchHeight[1])
+			return true;
+		return false;
+	}
+
 	double getEncoder(){
 		return _lift.getSelectedSensorPosition(0);
 	}
+
 	public void run(){
 		cargoGrabberRun();
 		SmartDashboard.putNumber("Encoder", _lift.getSelectedSensorPosition(0));
@@ -157,7 +168,10 @@ public class ManipulaterController {
 	}
 
 	public void getOffHab(Timer time){
-
+		if(time.get()<1)
+			grabberLift.set(DoubleSolenoid.Value.kReverse);
+		else if(time.get() >= 1)
+			hatchGrabber.set(DoubleSolenoid.Value.kForward);
 	}
 
 	void goToBottom(){

@@ -4,9 +4,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DriveTrain {
@@ -29,32 +28,58 @@ public class DriveTrain {
 
     DifferentialDrive _diffDrive = new DifferentialDrive(_leftFront, _rghtFront);
 
+    double speed = 1.25;
+
     public DriveTrain(Joystick joy){
         this.joy = joy;
 
-    _rghtFront.configFactoryDefault();
-    _rghtFollower.configFactoryDefault();
-    _leftFront.configFactoryDefault();
-    _leftFollower.configFactoryDefault();
-    _rghtFront.configClosedloopRamp(.2);
-    _leftFront.configClosedloopRamp(.2);
-    _rghtFront.configClosedloopRamp(.1, 0);
-    _leftFront.configClosedloopRamp(.2, 0);
-    _rghtFollower.follow(_rghtFront);
-    _leftFollower.follow(_leftFront);
-
-
-
+        _rghtFront.configFactoryDefault();
+        _rghtFollower.configFactoryDefault();
+        _leftFront.configFactoryDefault();
+        _leftFollower.configFactoryDefault();
+        _rghtFront.configClosedloopRamp(.2);
+        _leftFront.configClosedloopRamp(.2);
+        _rghtFront.configClosedloopRamp(.1, 0);
+        _leftFront.configClosedloopRamp(.2, 0);
+        _rghtFollower.follow(_rghtFront);
+        _leftFollower.follow(_leftFront);
     }
 
-    public void joyRun(){
+    
+
+    public void checkHeight(boolean tooHigh){
+        if(tooHigh)
+            speed = 2;
+        else 
+            speed = 1.25;
+    }
+
+    public void run(){
+        joyRun();
+        limelightDriveToTarget();
+    }
+
+
+
+    void joyRun(){
         if(!(joy.getRawButton(1) || joy.getRawButton(2)))
-        _diffDrive.arcadeDrive(-joy.getY()/1.5, joy.getZ()/1.5);
+            _diffDrive.arcadeDrive(-joy.getY()/1.5, joy.getZ()/1.5);
 
     }
 
     public void autoRun(double x,double z){
         _diffDrive.arcadeDrive(x, z);
+    }
+
+    public boolean getOffHab(Timer time){
+        if(time.get() >= 3 && time.get() <= 5)
+            autoRun(.5, 0);
+        else{
+            autoRun(0, 0);
+            return true;
+        }
+
+        return false;
     }
 
     public void climb(){
@@ -66,13 +91,13 @@ public class DriveTrain {
             _habClimb.set(0);
     }
 
-    public void limelightDriveToTarget(){
+    void limelightDriveToTarget(){
         if(joy.getRawButton(2)){
             double steering_speed = LimeLight.leftRun(); //Align on to left-most target
-            _diffDrive.arcadeDrive(-joy.getY()/1.5, steering_speed/(-1.5));
+            _diffDrive.arcadeDrive(-joy.getY()/speed, steering_speed/(-1.5));
         }else if(joy.getRawButton(1)){
             double steering_speed = LimeLight.rightRun(); //Alight on to right-most target
-            _diffDrive.arcadeDrive(-joy.getY()/1.5, steering_speed/(-1.5));
+            _diffDrive.arcadeDrive(-joy.getY()/speed, steering_speed/(-1.5));
         }else{
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
             }

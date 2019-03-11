@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
   Compressor c = new Compressor(0);
 
   enum robotModes{
-    START, DRIVE
+    START, GETOFFHAB, MANUALDRIVE
   }
 
   robotModes robo;
@@ -53,25 +53,33 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     _manipulaterController.reset();
-    //time.reset();
-    //time.start();
+    time.reset();
   }
 
   @Override
   public void robotPeriodic(){
-    /*switch(robo){
+    switch(robo){
       case START:
-        _manipulaterController.getOffHab(time);
+        time.start();
         break;
-      case DRIVE:
+
+      case GETOFFHAB:
+        _manipulaterController.getOffHab(time);
+        if(_drivetrain.getOffHab(time))
+          robo = robotModes.MANUALDRIVE;
+        break;
+
+      case MANUALDRIVE:
+        _drivetrain.checkHeight(_manipulaterController.tooHigh());
+        _drivetrain.run();
+        _manipulaterController.run();
+        break;
+    }
+    /*
         _drivetrain.joyRun();
         _manipulaterController.run();
         _drivetrain.limelightDriveToTarget();
-        break;
-    }*/
-    _drivetrain.joyRun();
-        _manipulaterController.run();
-        _drivetrain.limelightDriveToTarget();
+        */
   }
 
 }
