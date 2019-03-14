@@ -17,7 +17,7 @@ public class ManipulaterController {
 
 
 	DoubleSolenoid grabberLift = new DoubleSolenoid(2, 3);
-	DoubleSolenoid hatchGrabber = new DoubleSolenoid(0, 1);
+	DoubleSolenoid hatchGrabber = new DoubleSolenoid(1, 0);
 
 	WPI_TalonSRX _lift = new WPI_TalonSRX(30);
 	WPI_VictorSPX _ballWheel = new WPI_VictorSPX(31);
@@ -85,9 +85,9 @@ public class ManipulaterController {
     SmartDashboard.putNumber("Voltage", _lift.getMotorOutputVoltage());
     SmartDashboard.putNumber("Set point", liftPID.getSetpoint());
 
-		if(manipJoy.getRawButton(9)){
+		if(manipJoy.getRawButton(9) || driveJoy.getRawButton(9)){
         hatchGrabber.set(DoubleSolenoid.Value.kForward);
-    } else if(manipJoy.getRawButton(10)){
+    } else if(manipJoy.getRawButton(10) || driveJoy.getRawButton(10)){
      		hatchGrabber.set(DoubleSolenoid.Value.kReverse);
     } else{
     	 	hatchGrabber.set(DoubleSolenoid.Value.kOff);

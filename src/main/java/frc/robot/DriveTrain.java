@@ -73,7 +73,7 @@ public class DriveTrain {
     
     public boolean getOffHab(Timer time){
         if(time.get() >= 3 && time.get() <= 5)
-            autoRun(.5, 0);
+            autoRun(.6, 0);
         else if (time.get() >= 5){
             autoRun(0, 0);
             return true;
