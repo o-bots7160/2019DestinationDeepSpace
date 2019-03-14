@@ -2,7 +2,7 @@
 2019 FRC Robot Code
 Team: 7160
 Last Update: March 8, 2019 
-Written by : Jordan Lake, Conner Grant, David Scott
+Written by : Jordan Lake, Conner Grant, David Scott, Nathaniel Seymour, and Ben Walunas
 */
 
 
@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
   ManipulaterController _manipulaterController = new ManipulaterController(true, _joystick);
   LimeLight _limelight = new LimeLight();
   DriveTrain _drivetrain = new DriveTrain(_joystick);
-  Compressor c = new Compressor(0);
+  //Compressor c = new Compressor(0);
 
   enum robotModes{
     START, GETOFFHAB, MANUALDRIVE
@@ -33,6 +33,8 @@ public class Robot extends TimedRobot {
   robotModes robo;
 
   Timer time = new Timer();
+
+  boolean gameRunning = false;
 
   @Override
   public void robotInit() {
@@ -52,34 +54,48 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    gameRunning = true;
+    robo = robotModes.START;
     _manipulaterController.reset();
     time.reset();
   }
 
   @Override
   public void robotPeriodic(){
-    switch(robo){
-      case START:
-        time.start();
-        break;
 
-      case GETOFFHAB:
-        _manipulaterController.getOffHab(time);
-        if(_drivetrain.getOffHab(time))
-          robo = robotModes.MANUALDRIVE;
-        break;
+    System.out.println(robo);
 
-      case MANUALDRIVE:
-        _drivetrain.checkHeight(_manipulaterController.tooHigh());
-        _drivetrain.run();
-        _manipulaterController.run();
-        break;
+    if(gameRunning){
+      switch(robo){
+        case START:
+          time.start();
+          robo = robotModes.GETOFFHAB;
+          break;
+
+        case GETOFFHAB:
+          _manipulaterController.getOffHab(time);
+          if(_drivetrain.getOffHab(time))
+            robo = robotModes.MANUALDRIVE;
+          break;
+
+        case MANUALDRIVE:
+          _drivetrain.checkHeight(_manipulaterController.tooHigh());
+          _drivetrain.run();
+          _manipulaterController.run();
+          break;
+      }
     }
-    /*
-        _drivetrain.joyRun();
-        _manipulaterController.run();
-        _drivetrain.limelightDriveToTarget();
-        */
+  }
+  @Override
+  public void testInit() {
+    _manipulaterController.reset();
+  }
+
+  @Override
+  public void testPeriodic() {
+    _drivetrain.checkHeight(_manipulaterController.tooHigh());
+    _drivetrain.run();
+    _manipulaterController.run();
   }
 
 }

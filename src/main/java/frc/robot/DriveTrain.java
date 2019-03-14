@@ -70,11 +70,11 @@ public class DriveTrain {
     public void autoRun(double x,double z){
         _diffDrive.arcadeDrive(x, z);
     }
-
+    
     public boolean getOffHab(Timer time){
         if(time.get() >= 3 && time.get() <= 5)
             autoRun(.5, 0);
-        else{
+        else if (time.get() >= 5){
             autoRun(0, 0);
             return true;
         }
@@ -105,3 +105,4 @@ public class DriveTrain {
     
 
 }
+

@@ -1,5 +1,7 @@
 package frc.robot;
 
+
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -14,8 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ManipulaterController {
 
 
-	DoubleSolenoid grabberLift = new DoubleSolenoid(0, 1);
-	DoubleSolenoid hatchGrabber = new DoubleSolenoid(2, 3);
+	DoubleSolenoid grabberLift = new DoubleSolenoid(2, 3);
+	DoubleSolenoid hatchGrabber = new DoubleSolenoid(0, 1);
 
 	WPI_TalonSRX _lift = new WPI_TalonSRX(30);
 	WPI_VictorSPX _ballWheel = new WPI_VictorSPX(31);
@@ -172,6 +174,8 @@ public class ManipulaterController {
 			grabberLift.set(DoubleSolenoid.Value.kReverse);
 		else if(time.get() >= 1)
 			hatchGrabber.set(DoubleSolenoid.Value.kForward);
+		else
+			hatchGrabber.set(DoubleSolenoid.Value.kOff); 
 	}
 
 	void goToBottom(){
