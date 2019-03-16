@@ -9,7 +9,6 @@ Written by : Jordan Lake, Conner Grant, David Scott, Nathaniel Seymour, and Ben 
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -18,13 +17,13 @@ import edu.wpi.first.wpilibj.Timer;
 public class Robot extends TimedRobot {
   
 
-  Joystick _joystick = new Joystick(0);
+  Joystick driveJoy = new Joystick(0);
+  Joystick manipJoy = new Joystick(1);
 
 
-  ManipulaterController _manipulaterController = new ManipulaterController(true, _joystick);
+  ManipulaterController _manipulaterController = new ManipulaterController(true, driveJoy, manipJoy);
   LimeLight _limelight = new LimeLight();
-  DriveTrain _drivetrain = new DriveTrain(_joystick);
-  //Compressor c = new Compressor(0);
+  DriveTrain _drivetrain = new DriveTrain(driveJoy, manipJoy);
 
   enum robotModes{
     START, GETOFFHAB, MANUALDRIVE
@@ -38,6 +37,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    
     robo = robotModes.START;
     _manipulaterController.reset();
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic(){
 
-    System.out.println(robo);
+    //System.out.println(robo);
 
     if(gameRunning){
       switch(robo){

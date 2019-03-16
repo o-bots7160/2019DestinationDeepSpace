@@ -16,12 +16,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ManipulaterController {
 
 
-	DoubleSolenoid grabberLift = new DoubleSolenoid(2, 3);
-	DoubleSolenoid hatchGrabber = new DoubleSolenoid(1, 0);
+	DoubleSolenoid grabberLift = new DoubleSolenoid(0, 1);
+	DoubleSolenoid hatchGrabber = new DoubleSolenoid(2, 3);
 
 	WPI_TalonSRX _lift = new WPI_TalonSRX(30);
 	WPI_VictorSPX _ballWheel = new WPI_VictorSPX(31);
-	Joystick manipJoy = new Joystick(1);
+	Joystick manipJoy;
 	Joystick driveJoy;
 
 	// PID values
@@ -32,7 +32,7 @@ public class ManipulaterController {
 	// PID controller
 	PIDController liftPID = new PIDController(P, I, D, enc, _lift);
 	// Height for placing the hatch as well as modes to reach those points
-    double[] hatchHeight = new double[]{-500, -10200, -20117};
+    double[] hatchHeight = new double[]{-500, -10600, -20117};
 
 	// Height for placing the ball as well as modes to reach those points
     double[] ballHeight = new double[]{
@@ -41,7 +41,7 @@ public class ManipulaterController {
 		// rocket 2:
 		-17045,
 		// rocket 3:
-		-26330,
+		-26730,
 		// cargo:
 		-12000
 	};
@@ -60,8 +60,9 @@ public class ManipulaterController {
 
 	controlModes controlModes;
 	
-	public ManipulaterController(boolean setInverted, Joystick joy){
-		driveJoy = joy;
+	public ManipulaterController(boolean setInverted, Joystick driveJoy, Joystick manipJoy){
+		this.driveJoy = driveJoy;
+		this.manipJoy = manipJoy;
 		liftPID.reset();
 		liftPID.setOutputRange(-0.3, 0.5);
 		controlModes = controlModes.PID;
@@ -172,7 +173,7 @@ public class ManipulaterController {
 	public void getOffHab(Timer time){
 		if(time.get()<1)
 			grabberLift.set(DoubleSolenoid.Value.kReverse);
-		else if(time.get() >= 1)
+		else if(time.get() >= 1.5)
 			hatchGrabber.set(DoubleSolenoid.Value.kForward);
 		else
 			hatchGrabber.set(DoubleSolenoid.Value.kOff); 

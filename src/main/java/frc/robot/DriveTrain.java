@@ -5,12 +5,14 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DriveTrain {
 
-    Joystick joy;
+    Joystick driveJoy;
+    Joystick manipJoy;
 
     WPI_VictorSPX _rghtFront = new WPI_VictorSPX(10);
     WPI_VictorSPX _rghtFollower = new WPI_VictorSPX(11);
@@ -19,6 +21,9 @@ public class DriveTrain {
 
     WPI_VictorSPX _habClimb = new WPI_VictorSPX(40);
 
+    SpeedControllerGroup left = new SpeedControllerGroup(_leftFront, _leftFollower);
+    SpeedControllerGroup right = new SpeedControllerGroup(_rghtFront, _rghtFollower);
+
     //Solenoid _frontClimb1 = new Solenoid(1, 0);
     //Solenoid _backClimb1 = new Solenoid(1, 1);
 
@@ -26,12 +31,18 @@ public class DriveTrain {
     //DoubleSolenoid _frontClimbHab2 = new DoubleSolenoid(1,2,3);   
     //DoubleSolenoid _backClimbHab2 = new DoubleSolenoid(1, 4, 5);
 
-    DifferentialDrive _diffDrive = new DifferentialDrive(_leftFront, _rghtFront);
+    DifferentialDrive _diffDrive = new DifferentialDrive(left, right);
 
     double speed = 1.25;
 
-    public DriveTrain(Joystick joy){
-        this.joy = joy;
+    public DriveTrain(Joystick driveJoy, Joystick manipJoy){
+        //_rghtFollower.follow(_rghtFront);
+        //_leftFollower.follow(_leftFront);
+        this.driveJoy = driveJoy;
+        this.manipJoy = manipJoy;
+
+        _rghtFront.setInverted(true);
+        _rghtFollower.setInverted(false);
 
         _rghtFront.configFactoryDefault();
         _rghtFollower.configFactoryDefault();
@@ -41,8 +52,7 @@ public class DriveTrain {
         _leftFront.configClosedloopRamp(.2);
         _rghtFront.configClosedloopRamp(.1, 0);
         _leftFront.configClosedloopRamp(.2, 0);
-        _rghtFollower.follow(_rghtFront);
-        _leftFollower.follow(_leftFront);
+
     }
 
     
@@ -62,9 +72,25 @@ public class DriveTrain {
 
 
     void joyRun(){
-        if(!(joy.getRawButton(1) || joy.getRawButton(2)))
-            _diffDrive.arcadeDrive(-joy.getY()/1.5, joy.getZ()/1.5);
+        if(!(driveJoy.getRawButton(1) || driveJoy.getRawButton(2)))
+            _diffDrive.arcadeDrive(-driveJoy.getY()/1.25, driveJoy.getZ()/1.25);
 
+    }
+
+    void rockingSpeed(){
+        if(manipJoy.getRawButtonPressed(8)){
+            _rghtFront.configClosedloopRamp(0);
+            _leftFront.configClosedloopRamp(0);
+            _rghtFront.configClosedloopRamp(0, 0);
+            _leftFront.configClosedloopRamp(0, 0);
+            speed = 1;
+        }else{
+            _rghtFront.configClosedloopRamp(.2);
+            _leftFront.configClosedloopRamp(.2);
+            _rghtFront.configClosedloopRamp(.1, 0);
+            _leftFront.configClosedloopRamp(.2, 0);
+            speed = 1.25;
+        }
     }
 
     public void autoRun(double x,double z){
@@ -72,9 +98,9 @@ public class DriveTrain {
     }
     
     public boolean getOffHab(Timer time){
-        if(time.get() >= 3 && time.get() <= 5)
+        if(time.get() >=  4 && time.get() <= 6)
             autoRun(.6, 0);
-        else if (time.get() >= 5){
+        else if (time.get() >= 6){
             autoRun(0, 0);
             return true;
         }
@@ -83,21 +109,21 @@ public class DriveTrain {
     }
 
     public void climb(){
-        if(joy.getPOV()==0)
+        if(driveJoy.getPOV()==0)
             _habClimb.set(.5);
-        else if(joy.getPOV()==180)
+        else if(driveJoy.getPOV()==180)
             _habClimb.set(-.5);
         else
             _habClimb.set(0);
     }
 
     void limelightDriveToTarget(){
-        if(joy.getRawButton(2)){
+        if(driveJoy.getRawButton(2)){
             double steering_speed = LimeLight.leftRun(); //Align on to left-most target
-            _diffDrive.arcadeDrive(-joy.getY()/speed, steering_speed/(-1.5));
-        }else if(joy.getRawButton(1)){
+            _diffDrive.arcadeDrive(-driveJoy.getY()/1.25, steering_speed/(-1.5));
+        }else if(driveJoy.getRawButton(1)){
             double steering_speed = LimeLight.rightRun(); //Alight on to right-most target
-            _diffDrive.arcadeDrive(-joy.getY()/speed, steering_speed/(-1.5));
+            _diffDrive.arcadeDrive(-driveJoy.getY()/1.25, steering_speed/(-1.5));
         }else{
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
             }
