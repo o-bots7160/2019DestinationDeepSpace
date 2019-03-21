@@ -9,6 +9,8 @@ Written by : Jordan Lake, Conner Grant, David Scott, Nathaniel Seymour, and Ben 
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -35,6 +37,12 @@ public class Robot extends TimedRobot {
 
   boolean gameRunning = false;
 
+  I2C arduino = new I2C(I2C.Port.kOnboard, 8);
+  DriverStation.Alliance alliance;
+  byte[] receiveData = new byte[1];
+  byte[] Blue = "b".getBytes();
+  byte[] Red = "r".getBytes();
+
   @Override
   public void robotInit() {
     
@@ -54,6 +62,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    alliance = DriverStation.getInstance().getAlliance();
+
+    if(alliance == DriverStation.Alliance.Blue){
+      arduino.transaction(Blue, Blue.length, receiveData, receiveData.length);
+    }else if(alliance == DriverStation.Alliance.Red){
+      arduino.transaction(Red, Red.length, receiveData, receiveData.length);
+    }
+
     gameRunning = true;
     robo = robotModes.START;
     _manipulaterController.reset();

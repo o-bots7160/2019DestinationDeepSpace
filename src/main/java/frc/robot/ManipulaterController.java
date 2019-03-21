@@ -37,11 +37,11 @@ public class ManipulaterController {
 	// Height for placing the ball as well as modes to reach those points
     double[] ballHeight = new double[]{
 		// rocket 1:
-		-7082,
+		-7700,
 		// rocket 2:
 		-17045,
 		// rocket 3:
-		-26730,
+		-26390,
 		// cargo:
 		-12000
 	};
@@ -70,7 +70,7 @@ public class ManipulaterController {
 	}
 
 	public boolean tooHigh(){
-		if(getEncoder() >= hatchHeight[1])
+		if(getEncoder() >= ballHeight[3]-300)
 			return true;
 		return false;
 	}
@@ -171,9 +171,9 @@ public class ManipulaterController {
 	}
 
 	public void getOffHab(Timer time){
-		if(time.get()<1)
-			grabberLift.set(DoubleSolenoid.Value.kReverse);
-		else if(time.get() >= 1.5)
+		if(time.get()<1.25)
+			grabberLift.set(DoubleSolenoid.Value.kForward);
+		else if(time.get() >= 1.75)
 			hatchGrabber.set(DoubleSolenoid.Value.kForward);
 		else
 			hatchGrabber.set(DoubleSolenoid.Value.kOff); 

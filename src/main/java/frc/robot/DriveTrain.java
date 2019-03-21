@@ -58,8 +58,8 @@ public class DriveTrain {
     
 
     public void checkHeight(boolean tooHigh){
-        if(tooHigh)
-            speed = 2;
+        if(!tooHigh)
+            speed = 1.75;
         else 
             speed = 1.25;
     }
@@ -73,7 +73,7 @@ public class DriveTrain {
 
     void joyRun(){
         if(!(driveJoy.getRawButton(1) || driveJoy.getRawButton(2)))
-            _diffDrive.arcadeDrive(-driveJoy.getY()/1.25, driveJoy.getZ()/1.25);
+            _diffDrive.arcadeDrive(-driveJoy.getY()/speed, driveJoy.getZ()/speed);
 
     }
 
