@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ManipulaterController {
 
 
-	DoubleSolenoid grabberLift = new DoubleSolenoid(2, 3);
-	DoubleSolenoid hatchGrabber = new DoubleSolenoid(1, 0);
+	DoubleSolenoid grabberLift = new DoubleSolenoid(4,2, 3);
+	DoubleSolenoid hatchGrabber = new DoubleSolenoid(4,1, 0);
 
 	WPI_TalonSRX _lift = new WPI_TalonSRX(30);
 	WPI_VictorSPX _ballWheel = new WPI_VictorSPX(31);
@@ -85,21 +85,22 @@ public class ManipulaterController {
     SmartDashboard.putNumber("Voltage", _lift.getMotorOutputVoltage());
     SmartDashboard.putNumber("Set point", liftPID.getSetpoint());
 
-		if(manipJoy.getRawButton(9) || driveJoy.getRawButton(9)){
+		if(manipJoy.getRawButton(9) /*|| driveJoy.getRawButton(9)*/){
         hatchGrabber.set(DoubleSolenoid.Value.kForward);
-    } else if(manipJoy.getRawButton(10) || driveJoy.getRawButton(10)){
+    } else if(manipJoy.getRawButton(10) /*|| driveJoy.getRawButton(10)*/){
      		hatchGrabber.set(DoubleSolenoid.Value.kReverse);
     } else{
     	 	hatchGrabber.set(DoubleSolenoid.Value.kOff);
 		}
-		if(driveJoy.getRawButton(11)){
+		/*if(driveJoy.getRawButton(11)){
         grabberLift.set(DoubleSolenoid.Value.kForward);
     } else if(driveJoy.getRawButton(12)){
         grabberLift.set(DoubleSolenoid.Value.kReverse);
      } else{
         grabberLift.set(DoubleSolenoid.Value.kOff);
-		}
-		
+		}*/
+		grabberLift.set(DoubleSolenoid.Value.kOff);
+		//David do NOT forget to change this back
 
 		switch(controlModes){
 			case PID:

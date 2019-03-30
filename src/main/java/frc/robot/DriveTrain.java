@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -25,6 +26,11 @@ public class DriveTrain {
 
     //DoubleSolenoid _frontClimbHab2 = new DoubleSolenoid(1,2,3);   
     //DoubleSolenoid _backClimbHab2 = new DoubleSolenoid(1, 4, 5);
+    
+    //DoubleSolenoid sole1 = new DoubleSolenoid(4, 0, 1);
+    //DoubleSolenoid sole2 = new DoubleSolenoid(4, 2, 3);
+    DoubleSolenoid sole3 = new DoubleSolenoid(3, 0, 1);
+    DoubleSolenoid sole4 = new DoubleSolenoid(3, 2, 3); //temporary pneumatics testing*/
 
     DifferentialDrive _diffDrive = new DifferentialDrive(_leftFront, _rghtFront);
 
@@ -48,7 +54,7 @@ public class DriveTrain {
     
 
     public void checkHeight(boolean tooHigh){
-        if(tooHigh)
+        if(!tooHigh)
             speed = 2;
         else 
             speed = 1.25;
@@ -57,6 +63,25 @@ public class DriveTrain {
     public void run(){
         joyRun();
         limelightDriveToTarget();
+        //temporary set up
+        /*
+        if(joy.getRawButton(9)){
+            sole3.set(DoubleSolenoid.Value.kForward);
+        }else if(joy.getRawButton(10)){
+            sole3.set(DoubleSolenoid.Value.kReverse);
+            //sole5.set(false);
+        }else{
+            sole3.set(DoubleSolenoid.Value.kOff);
+        }
+        if(joy.getRawButton(11)){
+            sole4.set(DoubleSolenoid.Value.kForward);
+        } else if(joy.getRawButton(12)){
+            sole4.set(DoubleSolenoid.Value.kReverse);
+            //sole6.set(true);
+        } else{
+            sole4.set(DoubleSolenoid.Value.kOff);
+        }*/
+        //delete this if need to (between comments)
     }
 
 

@@ -9,7 +9,6 @@ Written by : Jordan Lake, Conner Grant, David Scott, Nathaniel Seymour, and Ben 
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -63,7 +62,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic(){
 
-    System.out.println(robo);
 
     if(gameRunning){
       switch(robo){
