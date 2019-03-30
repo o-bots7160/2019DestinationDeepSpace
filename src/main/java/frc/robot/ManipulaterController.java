@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ManipulaterController {
 
 
-	DoubleSolenoid grabberLift = new DoubleSolenoid(0, 1);
-	DoubleSolenoid hatchGrabber = new DoubleSolenoid(2, 3);
+	DoubleSolenoid grabberLift = new DoubleSolenoid(4, 0, 1);
+	DoubleSolenoid hatchGrabber = new DoubleSolenoid(4, 2, 3);
 
 	WPI_TalonSRX _lift = new WPI_TalonSRX(30);
 	WPI_VictorSPX _ballWheel = new WPI_VictorSPX(31);

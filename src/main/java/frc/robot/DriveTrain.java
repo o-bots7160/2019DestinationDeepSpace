@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Timer;
@@ -28,8 +29,9 @@ public class DriveTrain {
     //Solenoid _backClimb1 = new Solenoid(1, 1);
 
 
-    //DoubleSolenoid _frontClimbHab2 = new DoubleSolenoid(1,2,3);   
-    //DoubleSolenoid _backClimbHab2 = new DoubleSolenoid(1, 4, 5);
+
+    DoubleSolenoid _frontClimbHab = new DoubleSolenoid(3, 0,1);   
+    DoubleSolenoid _backClimbHab = new DoubleSolenoid(3, 2, 3);
 
     DifferentialDrive _diffDrive = new DifferentialDrive(left, right);
 
@@ -42,7 +44,7 @@ public class DriveTrain {
         this.manipJoy = manipJoy;
 
         _rghtFront.setInverted(true);
-        _rghtFollower.setInverted(false);
+        _rghtFollower.setInverted(true);
 
         _rghtFront.configFactoryDefault();
         _rghtFollower.configFactoryDefault();
@@ -66,6 +68,8 @@ public class DriveTrain {
 
     public void run(){
         joyRun();
+        if(manipJoy.getRawButtonPressed(8))
+            endGame();
         limelightDriveToTarget();
     }
 
@@ -77,20 +81,11 @@ public class DriveTrain {
 
     }
 
-    void rockingSpeed(){
-        if(manipJoy.getRawButtonPressed(8)){
-            _rghtFront.configClosedloopRamp(0);
-            _leftFront.configClosedloopRamp(0);
-            _rghtFront.configClosedloopRamp(0, 0);
-            _leftFront.configClosedloopRamp(0, 0);
-            speed = 1;
-        }else{
-            _rghtFront.configClosedloopRamp(.2);
-            _leftFront.configClosedloopRamp(.2);
-            _rghtFront.configClosedloopRamp(.1, 0);
-            _leftFront.configClosedloopRamp(.2, 0);
-            speed = 1.25;
-        }
+    void endGame(){
+
+        //if(manipJoy.getY() >= .5)
+
+        
     }
 
     public void autoRun(double x,double z){

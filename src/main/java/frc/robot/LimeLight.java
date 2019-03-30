@@ -61,9 +61,10 @@ public class LimeLight{
             */
         double steering_adjust = 0.0;
         double heading_error = -x;
-       //double max_driveSpeed = 1.0;
-       //double desired_distance = 20;
-       //double driving_adjust = 0;
+        //double max_driveSpeed = 1.0;
+        //double desired_distance = 20;
+        //double driving_adjust = 0;
+        System.out.println(x);
         if (x > 1.0){
             steering_adjust = Kp*heading_error - min_command;
             }else if (x < 1.0){
