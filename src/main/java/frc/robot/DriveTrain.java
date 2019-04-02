@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DriveTrain {
@@ -30,8 +31,8 @@ public class DriveTrain {
 
 
 
-    DoubleSolenoid _frontClimbHab = new DoubleSolenoid(3, 0,1);   
-    DoubleSolenoid _backClimbHab = new DoubleSolenoid(3, 2, 3);
+    DoubleSolenoid _backClimbHab = new DoubleSolenoid(3, 1,0);   
+    DoubleSolenoid _frontClimbHab = new DoubleSolenoid(3, 3, 2);
 
     DifferentialDrive _diffDrive = new DifferentialDrive(left, right);
 
@@ -43,8 +44,8 @@ public class DriveTrain {
         this.driveJoy = driveJoy;
         this.manipJoy = manipJoy;
 
-        _rghtFront.setInverted(true);
-        _rghtFollower.setInverted(true);
+        _rghtFront.setInverted(false);
+        _rghtFollower.setInverted(false);
 
         _rghtFront.configFactoryDefault();
         _rghtFollower.configFactoryDefault();
@@ -68,7 +69,7 @@ public class DriveTrain {
 
     public void run(){
         joyRun();
-        if(manipJoy.getRawButtonPressed(8))
+        if(manipJoy.getRawButton(8))
             endGame();
         limelightDriveToTarget();
     }
@@ -83,7 +84,35 @@ public class DriveTrain {
 
     void endGame(){
 
-        //if(manipJoy.getY() >= .5)
+
+        if(manipJoy.getX() >= .5){
+            _frontClimbHab.set(DoubleSolenoid.Value.kReverse);
+            _backClimbHab.set(DoubleSolenoid.Value.kForward);
+        }else if(manipJoy.getY()<=-.5)
+            _frontClimbHab.set(DoubleSolenoid.Value.kForward);
+        else if(manipJoy.getY()>=.5)
+            _backClimbHab.set(DoubleSolenoid.Value.kReverse);
+        else{
+            _frontClimbHab.set(DoubleSolenoid.Value.kOff);
+            _backClimbHab.set(DoubleSolenoid.Value.kOff);
+        }
+
+
+
+
+        /*if(manipJoy.getX() >= .5){
+            _frontClimbHab.set(DoubleSolenoid.Value.kForward);
+            _backClimbHab.set(DoubleSolenoid.Value.kForward);
+        }else if(manipJoy.getY()<=-.5)
+            _frontClimbHab.set(DoubleSolenoid.Value.kReverse);
+        else if(manipJoy.getY()>=.5)
+            _backClimbHab.set(DoubleSolenoid.Value.kReverse);
+        else{
+            _frontClimbHab.set(DoubleSolenoid.Value.kOff);
+            _backClimbHab.set(DoubleSolenoid.Value.kOff);
+        }*/
+        
+
 
         
     }
@@ -93,9 +122,9 @@ public class DriveTrain {
     }
     
     public boolean getOffHab(Timer time){
-        if(time.get() >=  4 && time.get() <= 6)
+        if(time.get() >=  2 && time.get() <= 4)
             autoRun(.6, 0);
-        else if (time.get() >= 6){
+        else if (time.get() >= 4){
             autoRun(0, 0);
             return true;
         }
@@ -115,10 +144,10 @@ public class DriveTrain {
     void limelightDriveToTarget(){
         if(driveJoy.getRawButton(2)){
             double steering_speed = LimeLight.leftRun(); //Align on to left-most target
-            _diffDrive.arcadeDrive(-driveJoy.getY()/1.25, steering_speed/(-1.5));
+            _diffDrive.arcadeDrive(-driveJoy.getY()/1.25, steering_speed/(-2));
         }else if(driveJoy.getRawButton(1)){
             double steering_speed = LimeLight.rightRun(); //Alight on to right-most target
-            _diffDrive.arcadeDrive(-driveJoy.getY()/1.25, steering_speed/(-1.5));
+            _diffDrive.arcadeDrive(-driveJoy.getY()/1.25, steering_speed/(-2));
         }else{
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
             }
