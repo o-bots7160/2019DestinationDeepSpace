@@ -62,7 +62,7 @@ public class DriveTrain {
 
     public void checkHeight(boolean tooHigh){
         if(!tooHigh)
-            speed = 1.75;
+            speed = 1.5;
         else 
             speed = 1.25;
     }

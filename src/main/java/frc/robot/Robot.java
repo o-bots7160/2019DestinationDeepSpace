@@ -9,11 +9,13 @@ Written by : Jordan Lake, Conner Grant, David Scott, Nathaniel Seymour, and Ben 
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Robot extends TimedRobot {
@@ -26,6 +28,8 @@ public class Robot extends TimedRobot {
   ManipulaterController _manipulaterController = new ManipulaterController(true, driveJoy, manipJoy);
   LimeLight _limelight = new LimeLight();
   DriveTrain _drivetrain = new DriveTrain(driveJoy, manipJoy);
+
+  AnalogInput pressure = new AnalogInput(0);
 
   enum robotModes{
     START, GETOFFHAB, MANUALDRIVE
@@ -50,6 +54,12 @@ public class Robot extends TimedRobot {
     _manipulaterController.reset();
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
   }
+
+  double getPressure(){
+      double underPressure = 250*(pressure.getVoltage()/5)-25;
+      return underPressure;
+    }
+
   @Override
   public void disabledInit() {
     
@@ -80,6 +90,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic(){
 
     //System.out.println(robo);
+    SmartDashboard.putNumber("PSI", getPressure());
 
     if(gameRunning){
       switch(robo){
