@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ManipulaterController {
 
 
-	DoubleSolenoid grabberLift = new DoubleSolenoid(4, 2, 3);
-	DoubleSolenoid hatchGrabber = new DoubleSolenoid(4, 0, 1);
+	DoubleSolenoid grabberLift = new DoubleSolenoid(0, 1);
+	DoubleSolenoid hatchGrabber = new DoubleSolenoid(2, 3);
 
 	WPI_TalonSRX _lift = new WPI_TalonSRX(30);
 	WPI_VictorSPX _ballWheel = new WPI_VictorSPX(31);
@@ -64,7 +64,8 @@ public class ManipulaterController {
 		this.driveJoy = driveJoy;
 		this.manipJoy = manipJoy;
 		liftPID.reset();
-		liftPID.setOutputRange(-0.3, 0.5);
+		// Was .5
+		liftPID.setOutputRange(-0.3, 0.6);
 		controlModes = controlModes.PID;
 		bottomModes = getToBottomModes.SETBOTTOMPOINT;
 	}
@@ -161,9 +162,9 @@ public class ManipulaterController {
 
 	public void cargoGrabberRun(){
 		if(manipJoy.getRawButton(11)){
-			_ballWheel.set(.8);
+			_ballWheel.set(.7);
 		}else if(manipJoy.getRawButton(12)){
-			_ballWheel.set(-.4);
+			_ballWheel.set(-.5);
 		}else{
 			_ballWheel.set(0);
 		}
@@ -173,8 +174,8 @@ public class ManipulaterController {
 	public void getOffHab(Timer time){
 		if(time.get()<1.25)
 			grabberLift.set(DoubleSolenoid.Value.kForward);
-		else if(time.get() >= 1.75)
-			hatchGrabber.set(DoubleSolenoid.Value.kReverse);
+		else if(time.get() >= 1.65)
+			hatchGrabber.set(DoubleSolenoid.Value.kForward);
 		else
 			hatchGrabber.set(DoubleSolenoid.Value.kOff); 
 	}

@@ -31,12 +31,12 @@ public class DriveTrain {
 
 
 
-    DoubleSolenoid _backClimbHab = new DoubleSolenoid(3, 1,0);   
-    DoubleSolenoid _frontClimbHab = new DoubleSolenoid(3, 3, 2);
+    DoubleSolenoid _backClimbHab = new DoubleSolenoid(6, 7);   
+    DoubleSolenoid _frontClimbHab = new DoubleSolenoid(4, 5);
 
     DifferentialDrive _diffDrive = new DifferentialDrive(left, right);
 
-    double speed = 1.25;
+    double speed = 1.15;
 
     public DriveTrain(Joystick driveJoy, Joystick manipJoy){
         //_rghtFollower.follow(_rghtFront);
@@ -44,7 +44,7 @@ public class DriveTrain {
         this.driveJoy = driveJoy;
         this.manipJoy = manipJoy;
 
-        _rghtFront.setInverted(false);
+        _rghtFront.setInverted(true);
         _rghtFollower.setInverted(false);
 
         _rghtFront.configFactoryDefault();
@@ -58,22 +58,27 @@ public class DriveTrain {
 
     }
 
+
     
 
     public void checkHeight(boolean tooHigh){
         if(!tooHigh)
             speed = 1.5;
         else 
-            speed = 1.25;
+            speed = 1.15;
     }
 
     public void run(){
-        joyRun();
-        if(manipJoy.getRawButton(8))
+        //joyRun();
+        if(manipJoy.getRawButton(8)){
+            speed = 1.5;
             endGame();
+        }
+        joyRun();
         limelightDriveToTarget();
     }
 
+    
 
 
     void joyRun(){
@@ -90,9 +95,10 @@ public class DriveTrain {
             _backClimbHab.set(DoubleSolenoid.Value.kForward);
         }else if(manipJoy.getY()<=-.5)
             _frontClimbHab.set(DoubleSolenoid.Value.kForward);
-        else if(manipJoy.getY()>=.5)
+        else if(manipJoy.getY()>=.5){
+            _frontClimbHab.set(DoubleSolenoid.Value.kReverse);
             _backClimbHab.set(DoubleSolenoid.Value.kReverse);
-        else{
+        }else{
             _frontClimbHab.set(DoubleSolenoid.Value.kOff);
             _backClimbHab.set(DoubleSolenoid.Value.kOff);
         }
